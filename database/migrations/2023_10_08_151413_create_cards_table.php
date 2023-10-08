@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('cards', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_id')->references('number')->on('accounts');
             $table->string('number');
-            $table->string('name');
-            $table->date('expiration_date');
-            $table->string('security_code');
-            $table->integer('status');
+            $table->string('password');
             $table->double('credit_limit');
-            $table->double('balance');
+            $table->string('cvv');
+            $table->date('expiration_date');
+            $table->boolean('is_blocked')->default(false);
+            $table->foreignId('account_id')->references('id')->on('accounts');
             $table->timestamps();
         });
     }

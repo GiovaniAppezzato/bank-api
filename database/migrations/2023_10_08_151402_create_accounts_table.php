@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('accounts', function (Blueprint $table) {
-            $table->bigIncrements('number'); //This seems fishy
-            $table->foreignId('client_id')->references('id')->on('clients')->onDelete('cascade');
+            $table->id();
             $table->double('balance');
-            $table->string('password');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
