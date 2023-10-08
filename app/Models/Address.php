@@ -5,14 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Account extends Model
+class Address extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'id',
-        'balance',
-        'user_id'
+        'city',
+        'neighborhood',
+        'street',
+        'number',
+        'complement',
+        'zip_code',
+        'user_id',
+        'state_id'
     ];
 
     public function user()
@@ -20,8 +25,9 @@ class Account extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function cards()
+    public function state()
     {
-        return $this->hasMany(Card::class);
+        return $this->belongsTo(User::class);
     }
+
 }

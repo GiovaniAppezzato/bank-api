@@ -20,7 +20,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'cpf',
         'password',
+        'birth',
+        'sex',
     ];
 
     /**
@@ -39,7 +42,18 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'birth'             => 'datetime:Y-m-d',
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password'          => 'hashed',
     ];
+
+    public function account()
+    {
+        return $this->hasOne(Account::class);
+    }
+
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
 }

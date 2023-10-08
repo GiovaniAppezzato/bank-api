@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('accounts', function (Blueprint $table) {
+        Schema::create('states', function (Blueprint $table) {
             $table->id();
-            $table->double('balance')->default(0);
-            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->timestamps();
+            $table->string('name');
+            $table->string('uf');
         });
     }
 
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('accounts');
+        Schema::dropIfExists('states');
     }
 };
