@@ -10,18 +10,17 @@ class Card extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'cpf',
-        'email',
-        'birth',
-        'sex',
-        'region',
-        'neighborhood',
-        'address',
+        'number',
+        'password',
+        'credit_limit',
+        'cvv',
+        'expiration_date',
+        'is_blocked',
+        'account_id'
     ];
 
-    public function accounts()
+    public function account()
     {
-        $this->belongsTo(Account::class); //Many? Maybe?
+        $this->belongsTo(Account::class);
     }
 }

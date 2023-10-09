@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transfer', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->string('city');
+            $table->string('neighborhood');
+            $table->string('street');
             $table->string('number');
-            $table->string('sender');
-            $table->string('receiver');
-            $table->double('value');
-            $table->date('date');
-            $table->integer('status');
+            $table->string('complement');
+            $table->string('zip_code');
+            $table->foreignId('state_id')->references('id')->on('states');
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transfer');
+        Schema::dropIfExists('addresses');
     }
 };

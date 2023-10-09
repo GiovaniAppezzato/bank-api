@@ -23,6 +23,4 @@ class Transfer extends Model
     {
         $this->belongsToMany(Account::class);
     }
-
-    //User function?
 }
