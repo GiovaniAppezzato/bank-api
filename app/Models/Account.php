@@ -24,4 +24,9 @@ class Account extends Model
     {
         return $this->hasMany(Card::class);
     }
+
+    public function savings()
+    {
+        return $this->hasOne(Savings::class, 'account_id');
+    }
 }
