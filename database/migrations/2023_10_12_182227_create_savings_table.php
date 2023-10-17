@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('savings', function (Blueprint $table) {
             $table->id();
-            $table->double('balance');
+            $table->double('balance')->default(0);
             $table->foreignId('account_id')->references('id')->on('accounts')->onDelete('cascade');
             $table->timestamps();
         });
