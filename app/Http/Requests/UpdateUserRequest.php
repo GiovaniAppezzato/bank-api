@@ -1,14 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\Rule;
 
-class StoreUserRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,14 +23,12 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'name'     => ['string','required'],
-            'email'    => ['string','required'],
+            'email'    => ['string','required',Rule::unique('users')->ignore($this->user()->id)], /* TODO: Fishy syntax */
             'cpf'      => ['string','required','max:11'],
-            'password' => ['string','required','min:6'],
-            'birth'    => ['date', 'required'],
-            'sex'      => ['required', 'string', Rule::in(['M', 'F'])],
+            'birth'    => ['date','required'],
+            'sex'      => ['required','string',Rule::in(['M', 'F'])],
         ];
     }
-
 
     /**
      * Handle a failed validation attempt.
