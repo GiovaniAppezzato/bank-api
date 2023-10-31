@@ -10,7 +10,7 @@ use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request): Response
     {
         $data = $request->validated();
 
@@ -25,7 +25,7 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user): Response
     {
         $data = $request->validated();
 

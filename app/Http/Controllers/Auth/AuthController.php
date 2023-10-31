@@ -10,10 +10,10 @@ use App\Http\Requests\Auth\LoginRequest;
 
 class AuthController extends Controller
 {
-    public function store(LoginRequest $request): JsonResponse
+    public function authenticate(LoginRequest $request): JsonResponse
     {
         $credentials = $request->only('email', 'password');
-        
+
         if(Auth::attempt($credentials)){
             /** @var User $user */
             $user = Auth::user();
