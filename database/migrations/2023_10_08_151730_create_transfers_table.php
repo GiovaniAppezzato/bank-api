@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('transfers', function (Blueprint $table) {
             $table->id();
-            $table->string('sender');
-            $table->string('receiver');
             $table->double('amount');
             $table->date('date');
             $table->enum('status', ['in', 'out']);
