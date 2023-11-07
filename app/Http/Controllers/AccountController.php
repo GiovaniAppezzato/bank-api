@@ -15,6 +15,6 @@ class AccountController extends Controller
         return response()->json([
             'success' => true,
             'account' => $account
-        ]);
+        ], 200);
     }
 }
