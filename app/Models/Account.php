@@ -29,4 +29,14 @@ class Account extends Model
     {
         return $this->hasOne(Savings::class, 'account_id');
     }
+
+    public function pix_keys()
+    {
+        return $this->hasMany(PixKey::class);
+    }
+
+    public function pix_movements()
+    {
+        return $this->hasMany(PixMovement::class);
+    }
 }

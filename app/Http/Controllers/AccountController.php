@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
-    public function index() //TODO: Is this all? Like... for real?
+    public function index()
     {
         $account = Account::findOrFail(Auth::id());
 

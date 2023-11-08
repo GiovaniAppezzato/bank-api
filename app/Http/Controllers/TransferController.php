@@ -40,6 +40,4 @@ class TransferController extends Controller
             'transfers' => $transfers
         ], 200);
     }
-
-    //TODO: Delete a transaction?
 }

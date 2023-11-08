@@ -15,5 +15,4 @@ class SavingsController extends Controller
             'savings' => $savings
         ], 200);
     }
-
 }

@@ -1,10 +1,12 @@
 <?php
 
+//QUESTION: Is this whole file even needed?
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRequest extends FormRequest
+class StorePixMovementRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +24,8 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'     => ['string','required'],
-            'email'    => ['string','required',Rule::unique('users')->ignore($this->user()->id)],
-            'cpf'      => ['string','required','max:11'],
-            'birth'    => ['date','required'],
-            'sex'      => ['required','string',Rule::in(['M', 'F'])],
+            'amount'   => ['required', 'double'],
+            'pix_id'   => ['required', 'string'] //QUESTION: Is this needed?
         ];
     }
 
