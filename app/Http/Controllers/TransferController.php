@@ -17,7 +17,7 @@ class TransferController extends Controller
         $user = Auth::user();
 
         $transfer = Transfer::create([
-            'sender'   => $user->id,
+            'sender'   => $user->id, //QUESTION: Isn't like "$account->id"?
             'receiver' => $data->receiver,
             'amount'   => $data->amount,
             'date'     => now()

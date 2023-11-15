@@ -38,10 +38,10 @@ class PixKeyController extends Controller
         ], 200);
     }
 
-    public function destroy()
+    public function destroy(PixKey $pixKey)
     {
         $pixKey->destroy();
 
-        //QUESTION: Is this all?
+        return response()->json(['message' => 'The pix key has been deleted'], 200);
     }
 }

@@ -26,12 +26,19 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'     => ['string','required'],
-            'email'    => ['string','required','unique:user,email'],
-            'cpf'      => ['string','required','max:11'],
-            'password' => ['string','required','min:6'],
-            'birth'    => ['date','required'],
-            'sex'      => ['required','string',Rule::in(['M', 'F'])],
+            'user.name'            => ['string','required'],
+            'user.email'           => ['string','required','unique:user,email'],
+            'user.cpf'             => ['string','required','max:11'],
+            'user.password'        => ['string','required','min:6'],
+            'user.birth'           => ['date','required'],
+            'user.sex'             => ['required','string',Rule::in(['M', 'F'])],
+            'user.photo'           => ['string','required'],
+            'address.city'         => ['string','required'],
+            'address.neighborhood' => ['string','required'],
+            'address.street'       => ['string','required'],
+            'address.number'       => ['string','required'],
+            'address.complement'   => ['string','required'],
+            'address.zip_code'     => ['string','required','min:9','max:9'],
         ];
     }
 

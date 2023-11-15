@@ -36,6 +36,14 @@ Route::middleware('auth:sanctum')->group(function (){
         // Route::apiResource('savings-movements', SavingsMovementsController::class)->ignore(['destroy', 'update']);
     });
 
+    Route::prefix('transfer')->group(function () {
+        Route::get('/', [TransferController::class, 'index']);
+    });
+
+    Route::prefix('card')->group(function (){
+        Route::get('/', [CardController::class, 'index']);
+    });
+
     // Route::apiResource('cards', CardController::class);
 });
 
