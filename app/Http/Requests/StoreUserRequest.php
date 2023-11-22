@@ -32,7 +32,7 @@ class StoreUserRequest extends FormRequest
             'user.password'        => ['string','required','min:6'],
             'user.birth'           => ['date','required'],
             'user.sex'             => ['required','string',Rule::in(['M', 'F'])],
-            'user.photo'           => ['string','required'],
+            'user.photo'           => ['string','nullable', 'mimes:jpg,jpeg,png,gif', 'max:2048'],
             'address.city'         => ['string','required'],
             'address.neighborhood' => ['string','required'],
             'address.street'       => ['string','required'],
