@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserController;
@@ -23,27 +22,24 @@ Route::post('login', [AuthController::class, 'authenticate']);
 Route::post('register', [UserController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function (){
-    Route::put('user/{id}', [UserController::class, 'update']);
     Route::delete('logout', [AuthController::class, 'destroy']);
+
+    Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'index']);
+        Route::put('/', [UserController::class, 'update']);
+        Route::put('/confirm-password', [UserController::class, 'confirmPassword']);
+    });
 
     Route::prefix('account')->group(function () {
         Route::get('/', [AccountController::class, 'index']);
-        // Route::apiResource('transfers', TransferController::class)->ignore(['destroy', 'update']);
+        Route::apiResource('transfers', TransferController::class)->except(['destroy', 'update']);
     });
 
     Route::prefix('savings')->group(function () {
         Route::get('/', [SavingsController::class, 'index']);
-        // Route::apiResource('savings-movements', SavingsMovementsController::class)->ignore(['destroy', 'update']);
+        Route::apiResource('savings-movements', SavingsMovementsController::class)->except(['destroy', 'update']);
     });
 
-    Route::prefix('transfer')->group(function () {
-        Route::get('/', [TransferController::class, 'index']);
-    });
-
-    Route::prefix('card')->group(function (){
-        Route::get('/', [CardController::class, 'index']);
-    });
-
-    // Route::apiResource('cards', CardController::class);
+    Route::apiResource('cards', CardController::class);
 });
 

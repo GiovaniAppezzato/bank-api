@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('neighborhood');
             $table->string('street');
             $table->string('number');
-            $table->string('complement');
+            $table->string('complement')->nullable();
             $table->string('zip_code');
-            $table->foreignId('state_id')->references('id')->on('states');
+            $table->string('state');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
         });

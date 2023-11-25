@@ -56,4 +56,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Address::class);
     }
+
+    public function newAccount($data)
+    {
+        $user = $this->create($data);
+
+        $account = $user->account()->create();
+        $account->savings()->create();
+
+        return $user;
+    }
 }

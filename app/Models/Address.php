@@ -17,17 +17,11 @@ class Address extends Model
         'complement',
         'zip_code',
         'user_id',
-        'state_id'
+        'state'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-    public function state()
-    {
-        return $this->belongsTo(User::class);
-    }
-
 }

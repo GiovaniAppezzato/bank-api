@@ -24,7 +24,11 @@ class AuthController extends Controller
             ]);
         }
 
-        return response()->json(null, 403);
+        return response()->json([
+            'message' => 'Credenciais inválidas'
+        ], 401);
+
+        // return response()->json(null, 403);
     }
 
     public function destroy(Request $request)
