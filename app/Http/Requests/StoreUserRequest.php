@@ -26,6 +26,7 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+<<<<<<< HEAD
             'name'         => ['string','required'],
             'email'        => ['string','required','unique:users,email'],
             'cpf'          => ['string','required','max:15'],
@@ -40,6 +41,21 @@ class StoreUserRequest extends FormRequest
             'zip_code'     => ['string','required','min:9','max:9'],
             'state'        => ['string','required'],
             'complement'   => ['nullable', 'string'],
+=======
+            'user.name'            => ['string','required'],
+            'user.email'           => ['string','required','unique:user,email'],
+            'user.cpf'             => ['string','required','max:11'],
+            'user.password'        => ['string','required','min:6'],
+            'user.birth'           => ['date','required'],
+            'user.sex'             => ['required','string',Rule::in(['M', 'F'])],
+            'user.photo'           => ['string','nullable', 'mimes:jpg,jpeg,png,gif', 'max:2048'],
+            'address.city'         => ['string','required'],
+            'address.neighborhood' => ['string','required'],
+            'address.street'       => ['string','required'],
+            'address.number'       => ['string','required'],
+            'address.complement'   => ['string','required'],
+            'address.zip_code'     => ['string','required','min:9','max:9'],
+>>>>>>> e96c6baac0a5762b724c74462ff2c0998d8d060a
         ];
     }
 }
