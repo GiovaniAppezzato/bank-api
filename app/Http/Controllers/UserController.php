@@ -87,7 +87,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function update(UpdateUserRequest $request, User $user): Response
+    public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
         $data = $request->validated();
         $user->update($data); //QUESTION: Do i need to add "photo_path" in here?
@@ -95,10 +95,7 @@ class UserController extends Controller
         $photoPath = null;
 
         if ($request->hasFile('user.photo')) {
-            $photoPath = $request->file('user.photo')
-            ->store('photos', 
-            Auth::id() . '.' . $request->file('user.photo')->getClientOrginalExtension(), 
-            'public');
+            $photoPath = $request->file('user.photo')->store('photos', Auth::id() . '.' . $request->file('user.photo')->getClientOrginalExtension(), 'public');
         }
 
         return response()->json([
