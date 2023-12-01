@@ -10,13 +10,10 @@ class Transfer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'account_id', //Is this right?
-        'number',
-        'sender',
-        'receiver',
-        'value',
-        'date',
-        'status',
+        'account_id',
+        'amount',
+        'sender_id',
+        'receiver_id',
     ];
 
     public function accounts()

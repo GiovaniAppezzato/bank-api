@@ -13,7 +13,7 @@ class PixMovement extends Model
         'id',
         'amount',
         'account_id',
-        'pix_id',
+        'pix_key_id',
     ];
 
     public function account()

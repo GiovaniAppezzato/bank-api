@@ -14,24 +14,15 @@ class PixKeyController extends Controller
     {
         $data = $request->validated();
 
-        $account = Account::findOrFail(Auth::id());
+        $account = Account::whereHas('user', function($query){
+            $query->where('id', Auth::id());
+        });
 
         $pixKey = PixKey::create([
             'name'       => $data->name,
             'status'     => $data->status,
             'account_id' => $account->id
         ]);
-
-        return response()->json([
-            'pixKey' => $pixKey
-        ], 200);
-    }
-
-    public function update(UpdatePixKeyRequest $request)
-    {
-        $data = $request->validated();
-
-        $pixKey->update($data);
 
         return response()->json([
             'pixKey' => $pixKey

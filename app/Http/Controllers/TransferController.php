@@ -10,50 +10,51 @@ use App\Http\Requests\StoreTransferRequest;
 
 class TransferController extends Controller
 {
-    public function store(StoreTransferRequest $request)
-    {
-        $data = $request->validated();
-        $user = Auth::user();
-        $account = Account::findOrFail(Auth::id());
-
-        $transfer = Transfer::create([
-            'sender'   => $account->id,
-            'receiver' => $data->receiver,
-            'amount'   => $data->amount,
-            'date'     => now()
-        ]);
-
-        //Just a sketch
-        if($transfer->status === 'out'){
-            $loss = $account->balance - $data->amount;
-
-            $account = Account::update([
-                'balance' => $loss
-            ]);
-        }else{
-            $earn = $account->balance + $data->amount;
-
-            $account = Account::update([
-                'balance' => $earn
-            ]);
-        }
-
-        
-        return response()->json([
-            'transfer' => $transfer
-        ], 201);
-    }
-
     public function index()
     {
-        $account = Account::findOrFail(Auth::id());
-
+        $account = Account::whereHas('user', function($query){
+            $query->where('id', Auth::id());
+        });
+    
         $transfers = Transfer::whereHas('accounts', function ($query) use ($account){
             $query->where('account_id', $account->id);
         })->get();
-
+    
         return response()->json([
             'transfers' => $transfers
         ], 200);
     }
+
+    public function store(StoreTransferRequest $request)
+    {
+        $data = $request->validated();
+
+        $accountSender = Account::whereHas('user', function($query){
+            $query->where('id', Auth::id());
+        });
+
+        $accountReceiver = Account::whereHas('user', function($query){ //QUESTION: Somehow i feel like "$data->receiver_id" is wrong, huh?
+            $query->where('id', $data->receiver_id);
+        });
+
+        $accountSender->balance = $accountSender->balance - $data->amount;
+        $accountSender->save();
+
+        $accountReceiver->balance = $accountReceiver->balance + $data->amount;
+        $accountReceiver->save();
+
+        $transfer = Transfer::create([
+            'amount'   => $data->amount,
+            'sender_id'   => $accountSender->id,
+            'receiver_id' => $data->receiver,
+            'amount'   => $data->amount,
+            'date'     => now()
+        ]);
+
+        return response()->json([
+            'status'   => true,
+            'transfer' => $transfer
+        ], 201);
+    }
+
 }

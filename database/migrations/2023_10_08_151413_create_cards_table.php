@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('number');
             $table->string('password');
             $table->double('credit_limit');
-            $table->string('cvv');
             $table->date('expiration_date');
             $table->boolean('is_blocked')->default(false);
             $table->foreignId('account_id')->references('id')->on('accounts');

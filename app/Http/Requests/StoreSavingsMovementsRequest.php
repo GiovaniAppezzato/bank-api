@@ -1,12 +1,10 @@
 <?php
 
-//QUESTION: Is this whole file even needed?
-
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePixMovementRequest extends FormRequest
+class StoreSavingsMovementsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +22,9 @@ class StorePixMovementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount'       => ['required', 'double'],
-            'pix_key_id'   => ['required', 'string'] //QUESTION: Is this needed?
+            'amount'     => ['required', 'double'],
+            'type'       => ['required', 'string',Rule::in(['Deposit', 'Withdraw'])],
+            'savings_id' => ['required', 'integer']
         ];
     }
 

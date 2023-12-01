@@ -13,7 +13,6 @@ class Card extends Model
         'number',
         'password',
         'credit_limit',
-        'cvv',
         'expiration_date',
         'is_blocked',
         'account_id'

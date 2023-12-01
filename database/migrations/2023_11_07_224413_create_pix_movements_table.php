@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('pix_movements', function (Blueprint $table) {
             $table->id();
             $table->double('amount');
-            $table->foreignId('account_id')->references('id')->on('accounts')->onDelete('cascade');
-            $table->foreignId('pix_id')->references('id')->on('pix_keys')->onDelete('cascade');
+            $table->foreignId('sender_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->foreignId('receiver_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->foreignId('pix_key_id')->references('id')->on('pix_keys')->onDelete('cascade');
             $table->timestamps();
         });
     }

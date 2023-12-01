@@ -90,7 +90,7 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
         $data = $request->validated();
-        $user->update($data); //QUESTION: Do i need to add "photo_path" in here?
+        $user->update($data);
 
         $photoPath = null;
 

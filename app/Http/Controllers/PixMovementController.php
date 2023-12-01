@@ -12,7 +12,9 @@ class PixMovementController extends Controller
 {
     public function index()
     {
-        $account = Account::findOrFail(Auth::id());
+        $account = Account::whereHas('user', function($query){
+            $query->where('id', Auth::id());
+        });
 
         $pixMovements = PixMovement::whereHas('accounts', function ($query) use ($account){
             $query->where('account_id', $account->id);
@@ -27,12 +29,32 @@ class PixMovementController extends Controller
     {
         $data = $request->validated();
 
-        $account = Account::findOrFail(Auth::id());
+        $accountSender = Account::whereHas('user', function($query){
+            $query->where('id', Auth::id());
+        });
+
+        $pixKey = PixKey::where('id', $data->pix_key_id); //QUESTION: Grabbing by ID seems ok?
+
+        $accountReceiver = Account::whereHas('pix_keys', function($query) use ($pixKey) {
+            $query->where('id', $pixKey->id);
+        });
+
+        $accountSender->balance = $accountSender->balance - $data->amount;
+        $accountSender->save();
+
+        $accountReceiver->balance = $accountReceiver->balance + $data->amount;
+        $accountReceiver->save();
 
         $pixMovement = PixMovement::create([
-            'amount'     => $data->amount,
-            'account_id' => $account->id,
-            'pix_id'     => $data->pix_id, //QUESTION: Is this needed?
+            'amount'      => $data->amount,
+            'sender_id'   => $accountSender,
+            'receiver_id' => $accountReceiver,
+            'pix_key_id'  => $pixKey,
         ]);
+
+        return response()->json([
+            'status'       => true,
+            'pixMovements' => $pixMovements
+        ], 201);
     }
 }

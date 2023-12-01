@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('transfers', function (Blueprint $table) {
             $table->id();
-            $table->string('sender');
-            $table->string('receiver');
             $table->double('amount');
-            $table->date('date');
-            $table->enum('status', ['in', 'out']);
-            $table->foreignId('account_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->foreignId('sender_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->foreignId('receiver_id')->references('id')->on('accounts')->onDelete('cascade');
             $table->timestamps();
         });
     }

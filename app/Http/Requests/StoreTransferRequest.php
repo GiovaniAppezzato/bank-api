@@ -26,8 +26,9 @@ class StoreTransferRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount'   => ['required', 'double'],
-            'receiver' => ['required', 'integer'],
+            'amount'      => ['required', 'double'],
+            'sender_id'   => ['required', 'integer'],
+            'receiver_id' => ['required', 'integer'],
         ];
     }
 
