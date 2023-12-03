@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
             $table->double('amount');
-            //QUESTION: Parcelas?
             $table->foreignId('account_id')->references('id')->on('accounts')->onDelete('cascade');
             $table->timestamps();
         });

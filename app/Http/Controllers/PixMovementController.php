@@ -34,6 +34,8 @@ class PixMovementController extends Controller
             $query->where('id', Auth::id());
         });
 
+        //Pegar "$pixkey->name" e verificar se existe algum pix com esse name
+
         $pixKey = PixKey::where('id', $data->pix_key_id); //QUESTION: Grabbing by ID seems ok?
 
         $accountReceiver = Account::whereHas('pix_keys', function($query) use ($pixKey) {
@@ -58,4 +60,6 @@ class PixMovementController extends Controller
             'pixMovements' => $pixMovement
         ], 201);
     }
+
+
 }
