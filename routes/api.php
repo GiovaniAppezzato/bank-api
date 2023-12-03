@@ -8,6 +8,7 @@ use App\Http\Controllers\TransferController;
 use App\Http\Controllers\SavingsController;
 use App\Http\Controllers\SavingsMovementsController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\PixKeyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::apiResource('savings-movements', SavingsMovementsController::class)->except(['destroy', 'update']);
     });
 
+    Route::apiResource('pix-keys', PixKeyController::class)->except(['show', 'update']);
     Route::apiResource('cards', CardController::class);
 });
 

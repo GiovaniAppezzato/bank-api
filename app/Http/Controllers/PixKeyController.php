@@ -3,25 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\PixKey;
-use App\Models\Account;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorePixKeyRequest;
-use App\Http\Requests\UpdatePixKeyRequest;
 
 class PixKeyController extends Controller
 {
+    public function index()
+    {
+        $pixKeys = Auth::user()->account->pix_keys;
+
+        return response()->json([
+            'pixKeys' => $pixKeys
+        ], 200);
+    }
+
     public function store(StorePixKeyRequest $request)
     {
         $data = $request->validated();
 
-        $account = Account::whereHas('user', function($query){
-            $query->where('id', Auth::id());
-        });
+        $account = Auth::user()->account;
 
         $pixKey = PixKey::create([
-            'name'       => $data->name,
-            'status'     => $data->status,
+            'name'       => $data['name'],
+            'status'     => $data['status'],
             'account_id' => $account->id
         ]);
 
@@ -30,10 +35,9 @@ class PixKeyController extends Controller
         ], 200);
     }
 
-    public function destroy(PixKey $pixKey)
+    public function destroy(Response $response, PixKey $pixKey)
     {
-        $pixKey->destroy($pixKey);
-
-        return response()->json(['message' => 'The pix key has been deleted'], 200);
+        $pixKey->delete();
+        return response()->json(null, 200);
     }
 }

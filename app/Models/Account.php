@@ -32,7 +32,7 @@ class Account extends Model
 
     public function pix_keys()
     {
-        return $this->hasMany(PixKey::class);
+        return $this->hasMany(PixKey::class, 'account_id');
     }
 
     public function pix_movements()

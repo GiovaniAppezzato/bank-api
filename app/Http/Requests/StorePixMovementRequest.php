@@ -1,7 +1,5 @@
 <?php
 
-//QUESTION: Is this whole file even needed?
-
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -24,26 +22,10 @@ class StorePixMovementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount'       => ['required', 'double'],
-            'pix_key_id'   => ['required', 'string'] //QUESTION: Is this needed?
+            'amount' => ['required', 'double'],
+            'pix_key' => ['required', 'string'],
+
+            // 'pix_key_id'   => ['required', 'string'] //QUESTION: Is this needed?
         ];
-    }
-
-    /**
-     * Handle a failed validation attempt.
-     *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @return void
-     *
-     * @throws \Illuminate\Http\Exceptions\HttpResponseException
-     */
-    protected function failedValidation(Validator $validator): void
-    {
-        $response = new JsonResponse([
-            'success' => false,
-            'errors' => $validator->errors(),
-        ], 422);
-
-        throw new HttpResponseException($response);
     }
 }

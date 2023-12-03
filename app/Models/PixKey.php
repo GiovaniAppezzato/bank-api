@@ -21,7 +21,7 @@ class PixKey extends Model
         return $this->belongsTo(Account::class);
     }
 
-    public function pix_movements() //Crime?
+    public function pix_movements()
     {
         return $this->hasMany(PixMovement::class);
     }
