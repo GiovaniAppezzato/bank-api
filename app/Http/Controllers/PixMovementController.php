@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PixKey;
 use App\Models\Account;
 use App\Models\PixMovement;
 use Illuminate\Http\Request;
@@ -54,7 +55,7 @@ class PixMovementController extends Controller
 
         return response()->json([
             'status'       => true,
-            'pixMovements' => $pixMovements
+            'pixMovements' => $pixMovement
         ], 201);
     }
 }

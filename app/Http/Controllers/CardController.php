@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Card;
+use App\Models\Account;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreCardRequest;
 
 class CardController extends Controller
 {
     public function index() //TODO: Need to be completed
     {
-        $user = Auth::user();
-        $account = $user->account;
+        $account = Account::whereHas('user', function($query){
+            $query->where('id', Auth::id());
+        });
 
         // $account = Account::findOrFail(Auth::id());
         return response()->json([
@@ -21,10 +26,19 @@ class CardController extends Controller
     public function store(StoreCardRequest $request)
     {
         $data = $request->validated();
-        $user = Auth::user();
-        $account = $user->account;
+        
+        $account = Account::whereHas('user', function($query){
+            $query->where('id', Auth::id());
+        });
 
-        $card = Card::create(['account_id' => $account->id]);
+        $card = Card::create([
+            'number'          => $data->number,
+            'password'        => $data->password,
+            'credit_limit'    => $data->credit_limit,
+            'experation_date' => $data->experation_date,
+            'is_blocked'      => $data->is_blocked,
+            'account_id'      => $account->id,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -34,8 +48,10 @@ class CardController extends Controller
 
     public function destroy(Card $card)
     {
-        $card->destroy();
+        $card->update([
+            'is_blocked' => true,
+        ]);
 
-        return response()->json(['message' => 'The credit card has been deleted'], 200);
+        return response()->json(['message' => 'The credit card has been blocked'], 201);
     }
 }

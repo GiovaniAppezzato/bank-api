@@ -24,10 +24,10 @@ class StoreCardRequest extends FormRequest
         return [
             'number'   => ['required', 'string'],
             'password' => ['required', 'string'],
-            // Will "credit_limit" be added
-            'cvv'      => ['required', 'string'],
-            'experation_date' => ['required', 'date'],
-            //Will "is_blocked" be added
+            'credit_limit' => ['required', 'double'],
+            'expiration_date' => ['required', 'date'],
+            'is_blocked' => ['required', 'integer'],
+            'account_id' => ['required', 'integer']
         ];
     }
 

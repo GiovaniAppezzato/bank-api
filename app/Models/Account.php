@@ -39,4 +39,9 @@ class Account extends Model
     {
         return $this->hasMany(PixMovement::class);
     }
+
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
 }
