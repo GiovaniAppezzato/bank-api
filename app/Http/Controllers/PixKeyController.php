@@ -6,6 +6,7 @@ use App\Models\PixKey;
 use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StorePixKeyRequest;
 use App\Http\Requests\UpdatePixKeyRequest;
 
 class PixKeyController extends Controller
@@ -31,7 +32,7 @@ class PixKeyController extends Controller
 
     public function destroy(PixKey $pixKey)
     {
-        $pixKey->destroy();
+        $pixKey->destroy($pixKey);
 
         return response()->json(['message' => 'The pix key has been deleted'], 200);
     }

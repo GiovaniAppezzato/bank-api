@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('number');
             $table->string('password');
-            $table->double('credit_limit');
+            $table->double('credit_limit')->default(1000.00);
             $table->date('expiration_date');
             $table->boolean('is_blocked')->default(false);
             $table->foreignId('account_id')->references('id')->on('accounts');

@@ -33,7 +33,7 @@ class TransferController extends Controller
             $query->where('id', Auth::id());
         });
 
-        $accountReceiver = Account::whereHas('user', function($query){ //QUESTION: Somehow i feel like "$data->receiver_id" is wrong, huh?
+        $accountReceiver = Account::whereHas('user', function($query) use ($data){ //QUESTION: Somehow i feel like "$data->receiver_id" is wrong, huh?
             $query->where('id', $data->receiver_id);
         });
 
