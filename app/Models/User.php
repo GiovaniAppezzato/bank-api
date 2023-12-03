@@ -24,7 +24,7 @@ class User extends Authenticatable
         'password',
         'birth',
         'sex',
-        'photo_path'
+        'photo'
     ];
 
     /**
@@ -58,9 +58,9 @@ class User extends Authenticatable
         return $this->hasOne(Address::class);
     }
 
-    public function newAccount($data)
+    public function newAccount($request)
     {
-        $user = $this->create($data);
+        $user = $this->create($request->validated());
 
         $account = $user->account()->create();
         $account->savings()->create();

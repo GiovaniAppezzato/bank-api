@@ -35,19 +35,28 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
-            $data = $request->validated();
-
-            $user = $this->user->newAccount($data);
+            $user = $this->user->newAccount($request);
 
             $user->address()->create([
-                'city'         => $data['city'],
-                'neighborhood' => $data['neighborhood'],
-                'street'       => $data['street'],
-                'number'       => $data['number'],
-                'complement'   => $data['complement'],
-                'zip_code'     => $data['zip_code'],
-                'state'        => $data['state'],
+                'city'         => $request->city,
+                'neighborhood' => $request->neighborhood,
+                'street'       => $request->street,
+                'number'       => $request->number,
+                'complement'   => $request->complement,
+                'zip_code'     => $request->zip_code,
+                'state'        => $request->state,
             ]);
+
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo');
+                $extension = $file->extension();
+
+                $hash = md5($file->getClientOriginalName() . strtotime('now')) . "." . $extension;
+                $file->storeAs('public/users', $hash);
+
+                $user->photo = $hash;
+                $user->save();
+            }
 
             $credentials = $request->only('email', 'password');
 
