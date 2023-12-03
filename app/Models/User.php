@@ -25,7 +25,7 @@ class User extends Authenticatable
         'password',
         'birth',
         'sex',
-        'photo_path'
+        'photo'
     ];
 
     /**
@@ -59,9 +59,9 @@ class User extends Authenticatable
         return $this->hasOne(Address::class);
     }
 
-    public function newAccount($data)
+    public function newAccount($request)
     {
-        $user = $this->create($data);
+        $user = $this->create($request->validated());
 
         $randomNumber = substr_replace(Str::random(9), '-', 9, 0);
     
