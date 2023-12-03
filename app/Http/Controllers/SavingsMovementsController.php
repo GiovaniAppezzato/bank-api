@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
+use App\Models\Savings;
 use Illuminate\Http\Request;
+use App\Models\SavingsMovement;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreSavingsMovementsRequest;
 
 class SavingsMovementsController extends Controller
 {
@@ -12,11 +18,11 @@ class SavingsMovementsController extends Controller
             $query->where('id', Auth::id());
         });
         
-        $savings = Saving::whereHas('account', function($query) use ($account){
+        $savings = Savings::whereHas('account', function($query) use ($account){
             $query->where('account_id', $account->id);
         });
 
-        $savingsMovements = SavingsMovements::whereHas('savings', function ($query) use ($savings){
+        $savingsMovements = SavingsMovement::whereHas('savings', function ($query) use ($savings){
             $query->where('savings_id', $savings->id);
         })->get();
 
@@ -40,7 +46,7 @@ class SavingsMovementsController extends Controller
 
         if($data->type === 'Deposit'){
             $updatedValue = $savings->balance + $data->amount;
-            $savings->balance = $updateValue;
+            $savings->balance = $updatedValue;
             $savings->save();
         }elseif($data->type === 'Withdraw'){
             $updatedValue = $savings->balance - $data->amount;

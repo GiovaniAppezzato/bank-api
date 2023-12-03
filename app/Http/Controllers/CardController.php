@@ -16,7 +16,6 @@ class CardController extends Controller
             $query->where('id', Auth::id());
         });
 
-        // $account = Account::findOrFail(Auth::id());
         return response()->json([
             'number' => true,
             'account' => $account
@@ -32,11 +31,11 @@ class CardController extends Controller
         });
 
         $card = Card::create([
-            'number'          => $data->number,
-            'password'        => $data->password,
-            'credit_limit'    => $data->credit_limit,
-            'experation_date' => $data->experation_date,
-            'is_blocked'      => $data->is_blocked,
+            'number'          => $data['number'],
+            'password'        => $data['password'],
+            'credit_limit'    => $data['credit_limit'],
+            'experation_date' => $data['experation_date'],
+            'is_blocked'      => $data['is_blocked'],
             'account_id'      => $account->id,
         ]);
 
