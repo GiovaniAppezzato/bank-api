@@ -47,6 +47,6 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::get('pix-movements/get-account-by-pix-key/{pixKey}', [PixMovementController::class, 'getAccountByPixKey']);
 
     Route::apiResource('pix-keys', PixKeyController::class)->except(['show', 'update']);
-    Route::apiResource('cards', CardController::class);
+    Route::apiResource('cards', CardController::class)->only(['index', 'store']);
 });
 

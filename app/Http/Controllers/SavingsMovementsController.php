@@ -2,60 +2,76 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Savings;
+use App\Models\SavingsMovement;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreSavingsMovementsRequest;
 
 class SavingsMovementsController extends Controller
 {
     public function index()
     {
-        $account = Account::whereHas('user', function($query){
-            $query->where('id', Auth::id());
-        });
-        
-        $savings = Saving::whereHas('account', function($query) use ($account){
-            $query->where('account_id', $account->id);
-        });
+        $account = Auth::user()->account;
+        $savings = Savings::where('account_id', $account->id)->first();
 
-        $savingsMovements = SavingsMovements::whereHas('savings', function ($query) use ($savings){
-            $query->where('savings_id', $savings->id);
-        })->get();
+        $savingsMovements = SavingsMovement::where('savings_id', $savings->id)->orderBy('created_at', 'desc')->get();
 
         return response()->json([
             'success' => true,
-            'savings' => $savingsMovements
+            'savingsMovements' => $savingsMovements
         ], 200);
     }
 
-    public function store(StoreSavingsMovementsRequest $request): JsonResponse
+    public function store(StoreSavingsMovementsRequest $request)
     {
-        $data = $request->validated();
+        try {
+            DB::beginTransaction();
 
-        $account = Account::whereHas('user', function($query){
-            $query->where('id', Auth::id());
-        });
-        
-        $savings = Savings::whereHas('account', function($query) use ($account){
-            $query->where('account_id', $account->id);
-        });
+            $data = $request->validated();
 
-        if($data->type === 'Deposit'){
-            $updatedValue = $savings->balance + $data->amount;
-            $savings->balance = $updateValue;
-            $savings->save();
-        }elseif($data->type === 'Withdraw'){
-            $updatedValue = $savings->balance - $data->amount;
-            $savings->balance = $updatedValue;
-            $savings->save();
+            $account = Auth::user()->account;
+            $savings = Savings::where('account_id', $account->id)->first();
+
+            if($data['type'] === 'Deposit') {
+                $savingsBalance = $savings->balance + $data['amount'];
+                $savings->balance = $savingsBalance;
+                $savings->save();
+
+                $accountBalance = $account->balance - $data['amount'];
+                $account->balance = $accountBalance;
+                $account->save();
+            } else {
+                $savingsBalance = $savings->balance - $data['amount'];
+                $savings->balance = $savingsBalance;
+                $savings->save();
+
+                $accountBalance = $account->balance + $data['amount'];
+                $account->balance = $accountBalance;
+                $account->save();
+            }
+
+            $savingsMovements = SavingsMovement::create([
+                'amount' => $data['amount'],
+                'type'   => $data['type'],
+                'savings_id' => $savings->id,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'savingsMovement' => $savingsMovements,
+                'savings' => $savings,
+                'account' => $account
+            ], 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'error' => $th->getMessage()
+            ], 500);
         }
-        
-        $savingsMovements = Savings::create([
-            'amount' => $data->amount,
-            'type'   => $data->type,
-            'savings_id' => $savings->id,
-        ]);
-        
-        return response()->json([
-            'savingsMovements' => $savingsMovements
-        ], 201);
     }
 }

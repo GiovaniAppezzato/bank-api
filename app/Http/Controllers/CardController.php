@@ -2,41 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Card;
 use App\Models\Account;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreCardRequest;
 
 class CardController extends Controller
 {
-    public function index() //TODO: Need to be completed
+    public function index()
     {
-        $account = Account::whereHas('user', function($query){
-            $query->where('id', Auth::id());
-        });
+        $cards = Auth::user()->account->cards;
 
-        // $account = Account::findOrFail(Auth::id());
         return response()->json([
-            'number' => true,
-            'account' => $account
+            'cards' => $cards
         ]);
     }
 
     public function store(StoreCardRequest $request)
     {
         $data = $request->validated();
-        
-        $account = Account::whereHas('user', function($query){
-            $query->where('id', Auth::id());
-        });
+
+        $account = Auth::user()->account;
+
+        $randomNumber = mt_rand(1000, 9999);
+        $randomNumber .= mt_rand(1000, 9999);
+        $randomNumber .= mt_rand(1000, 9999);
+        $randomNumber .= mt_rand(1000, 9999);
+
+        $expirationDate = Carbon::now()->addYears(10)->toDateString();
 
         $card = Card::create([
-            'number'          => $data->number,
-            'password'        => $data->password,
-            'credit_limit'    => $data->credit_limit,
-            'experation_date' => $data->experation_date,
-            'is_blocked'      => $data->is_blocked,
+            'number'          => $randomNumber,
+            'password'        => bcrypt($data['password']),
+            'credit_limit'    => $data['credit_limit'],
+            'expiration_date' => $expirationDate,
             'account_id'      => $account->id,
         ]);
 
@@ -52,6 +52,6 @@ class CardController extends Controller
             'is_blocked' => true,
         ]);
 
-        return response()->json(['message' => 'The credit card has been blocked'], 201);
+        return response()->json(null, 201);
     }
 }

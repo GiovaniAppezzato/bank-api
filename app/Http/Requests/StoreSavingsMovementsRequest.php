@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreSavingsMovementsRequest extends FormRequest
 {
@@ -22,27 +23,8 @@ class StoreSavingsMovementsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount'     => ['required', 'double'],
-            'type'       => ['required', 'string',Rule::in(['Deposit', 'Withdraw'])],
-            'savings_id' => ['required', 'integer']
+            'amount'     => ['required', 'numeric'],
+            'type'       => ['required', 'string', Rule::in(['Deposit', 'Withdraw'])],
         ];
-    }
-
-    /**
-     * Handle a failed validation attempt.
-     *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @return void
-     *
-     * @throws \Illuminate\Http\Exceptions\HttpResponseException
-     */
-    protected function failedValidation(Validator $validator): void
-    {
-        $response = new JsonResponse([
-            'success' => false,
-            'errors' => $validator->errors(),
-        ], 422);
-
-        throw new HttpResponseException($response);
     }
 }

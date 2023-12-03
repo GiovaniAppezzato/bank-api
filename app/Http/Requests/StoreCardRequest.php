@@ -22,30 +22,8 @@ class StoreCardRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'number'   => ['required', 'string'],
             'password' => ['required', 'string'],
-            'credit_limit' => ['required', 'double'],
-            'expiration_date' => ['required', 'date'],
-            'is_blocked' => ['required', 'integer'],
-            'account_id' => ['required', 'integer']
+            'credit_limit' => ['required', 'numeric'],
         ];
-    }
-
-    /**
-     * Handle a failed validation attempt.
-     *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @return void
-     *
-     * @throws \Illuminate\Http\Exceptions\HttpResponseException
-     */
-    protected function failedValidation(Validator $validator): void
-    {
-        $response = new JsonResponse([
-            'success' => false,
-            'errors' => $validator->errors(),
-        ], 422);
-
-        throw new HttpResponseException($response);
     }
 }

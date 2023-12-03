@@ -21,7 +21,7 @@ class Savings extends Model
         'account_id'
     ];
 
-    public function savingsMovements()
+    public function savings_movements()
     {
         return $this->hasMany(SavingsMovement::class, 'savings_id');
     }
