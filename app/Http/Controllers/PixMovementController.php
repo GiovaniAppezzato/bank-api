@@ -3,19 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\PixKey;
-use App\Models\Account;
 use App\Models\PixMovement;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePixMovementRequest;
 
 class PixMovementController extends Controller
 {
     public function index()
     {
-        $account = Account::whereHas('user', function($query){
-            $query->where('id', Auth::id());
-        });
+        $account = Auth::user()->account;
 
         $pixMovements = PixMovement::whereHas('accounts', function ($query) use ($account){
             $query->where('account_id', $account->id);
@@ -28,38 +25,51 @@ class PixMovementController extends Controller
 
     public function store(StorePixMovementRequest $request)
     {
-        $data = $request->validated();
+        try {
+            DB::beginTransaction();
 
-        $accountSender = Account::whereHas('user', function($query){
-            $query->where('id', Auth::id());
-        });
+            $data = $request->validated();
 
-        //Pegar "$pixkey->name" e verificar se existe algum pix com esse name
+            $accountSender = Auth::user()->account;
 
-        $pixKey = PixKey::where('id', $data->pix_key_id); //QUESTION: Grabbing by ID seems ok?
+            $pixKey = PixKey::with('account')->where('name', $data['pix_key'])->first();
+            $accountReceiver = $pixKey->account;
 
-        $accountReceiver = Account::whereHas('pix_keys', function($query) use ($pixKey) {
-            $query->where('id', $pixKey->id);
-        });
+            $accountSender->balance = $accountSender->balance - $data['amount'];
+            $accountSender->save();
 
-        $accountSender->balance = $accountSender->balance - $data->amount;
-        $accountSender->save();
+            $accountReceiver->balance = $accountReceiver->balance + $data['amount'];
+            $accountReceiver->save();
 
-        $accountReceiver->balance = $accountReceiver->balance + $data->amount;
-        $accountReceiver->save();
+            $pixMovement = PixMovement::create([
+                'amount'      => $data['amount'],
+                'sender_id'   => $accountSender->id,
+                'receiver_id' => $accountReceiver->id,
+                'pix_key_id'  => $pixKey->id,
+            ]);
 
-        $pixMovement = PixMovement::create([
-            'amount'      => $data->amount,
-            'sender_id'   => $accountSender,
-            'receiver_id' => $accountReceiver,
-            'pix_key_id'  => $pixKey,
-        ]);
+            DB::commit();
 
-        return response()->json([
-            'status'       => true,
-            'pixMovements' => $pixMovement
-        ], 201);
+            return response()->json([
+                'success' => true,
+                'pixMovement' => $pixMovement
+            ], 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'error' => $th->getMessage()
+            ], 500);
+        }
     }
 
+    public function getAccountByPixKey($pixKey)
+    {
+        $pixKey = PixKey::with('account.user')->where('name', $pixKey)->first();
 
+        return response()->json([
+            'account' => $pixKey->account
+        ], 200);
+    }
 }

@@ -22,10 +22,8 @@ class StorePixMovementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => ['required', 'double'],
+            'amount' => ['required'],
             'pix_key' => ['required', 'string'],
-
-            // 'pix_key_id'   => ['required', 'string'] //QUESTION: Is this needed?
         ];
     }
 }

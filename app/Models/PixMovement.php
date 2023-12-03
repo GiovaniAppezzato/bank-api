@@ -12,7 +12,8 @@ class PixMovement extends Model
     protected $fillable = [
         'id',
         'amount',
-        'account_id',
+        'sender_id',
+        'receiver_id',
         'pix_key_id',
     ];
 
