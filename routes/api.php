@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function (){
 
     Route::prefix('account')->group(function () {
         Route::get('/', [AccountController::class, 'index']);
-        Route::apiResource('transfers', TransferController::class)->except(['destroy', 'update']);
+        Route::apiResource('transfers', TransferController::class)->only(['index', 'store']);
     });
 
     Route::prefix('savings')->group(function () {

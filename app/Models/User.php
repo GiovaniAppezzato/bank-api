@@ -63,11 +63,10 @@ class User extends Authenticatable
     {
         $user = $this->create($request->validated());
 
-        $randomNumber = substr_replace(Str::random(9), '-', 9, 0);
-    
-        $account = $user->account()->create([
-            "number" => $randomNumber
-        ]);
+        $randomNumberPart1 = rand(1000000, 9999999);
+        $randomNumberPart2 = rand(1, 9);
+        $randomNumber = $randomNumberPart1 . '-' . $randomNumberPart2;
+        $account = $user->account()->create([ "number" => $randomNumber]);
 
         $account->savings()->create();
 

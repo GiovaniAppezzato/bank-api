@@ -52,7 +52,8 @@ class PixMovementController extends Controller
 
             return response()->json([
                 'success' => true,
-                'pixMovement' => $pixMovement
+                'pixMovement' => $pixMovement,
+                'accountSender' => $accountSender,
             ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -68,8 +69,10 @@ class PixMovementController extends Controller
     {
         $pixKey = PixKey::with('account.user')->where('name', $pixKey)->first();
 
+        $account = $pixKey ? $pixKey->account : null;
+
         return response()->json([
-            'account' => $pixKey->account
+            'account' => $account
         ], 200);
     }
 }
