@@ -3,10 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -62,7 +63,12 @@ class User extends Authenticatable
     {
         $user = $this->create($request->validated());
 
-        $account = $user->account()->create();
+        $randomNumber = substr_replace(Str::random(9), '-', 9, 0);
+    
+        $account = $user->account()->create([
+            "number" => $randomNumber
+        ]);
+
         $account->savings()->create();
 
         return $user;

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pix_keys', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->enum('status', ['cpf', 'email', 'phone']);
             $table->foreignId('account_id')->references('id')->on('accounts')->onDelete('cascade');
             $table->timestamps();
