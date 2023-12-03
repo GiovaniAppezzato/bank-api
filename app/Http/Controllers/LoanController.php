@@ -34,13 +34,16 @@ class LoanController extends Controller
         });
 
         $loan = Loan::create([
-            'amount'     => $data->amount,
+            'amount'     => $data['amount'],
             'account_id' => $account->id
         ]);
 
+        $account->balance = $loan->amount;
+        $account->save();
+
         return response()->json([
             'status'   => true,
-            'transfer' => $loan
+            'loan' => $loan
         ], 201);
     }
 }
