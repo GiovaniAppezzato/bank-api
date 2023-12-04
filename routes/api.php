@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function (){
 
     Route::prefix('account')->group(function () {
         Route::get('/', [AccountController::class, 'index']);
+        Route::get('/reports', [AccountController::class, 'getReports']);
         Route::apiResource('transfers', TransferController::class)->only(['index', 'store']);
     });
 

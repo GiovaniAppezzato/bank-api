@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Report;
 use App\Models\Transfer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\TransactionTypesEnum;
 use App\Http\Requests\StoreTransferRequest;
 
 class TransferController extends Controller
@@ -45,12 +47,29 @@ class TransferController extends Controller
                 'receiver_id' => $accountReceiver->id,
             ]);
 
+            $report = Report::create([
+                'amount' => $data['amount'],
+                'status' => 'out',
+                'transaction_type' => TransactionTypesEnum::TRANSFER,
+                'transaction_id' => $transfer->id,
+                'account_id' => $accountSender->id,
+            ]);
+
+            Report::create([
+                'amount' => $data['amount'],
+                'status' => 'in',
+                'transaction_type' => TransactionTypesEnum::TRANSFER,
+                'transaction_id' => $transfer->id,
+                'account_id' => $accountReceiver->id,
+            ]);
+
             DB::commit();
 
             return response()->json([
                 'success' => true,
                 'transfer' => $transfer,
                 'accountSender' => $accountSender,
+                'report' => $report,
             ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();

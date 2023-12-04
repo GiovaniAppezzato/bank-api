@@ -45,4 +45,9 @@ class Account extends Model
     {
         return $this->hasMany(Loan::class);
     }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
 }

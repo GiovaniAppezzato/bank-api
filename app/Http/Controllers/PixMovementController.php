@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\PixKey;
+use App\Models\Report;
 use App\Models\PixMovement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePixMovementRequest;
+use App\Enums\TransactionTypesEnum;
 
 class PixMovementController extends Controller
 {
@@ -48,12 +50,30 @@ class PixMovementController extends Controller
                 'pix_key_id'  => $pixKey->id,
             ]);
 
+            // ** Report
+            $report = Report::create([
+                'amount' => $data['amount'],
+                'status' => 'out',
+                'transaction_type' => TransactionTypesEnum::PIX,
+                'transaction_id' => $pixMovement->id,
+                'account_id' => $accountSender->id,
+            ]);
+
+            Report::create([
+                'amount' => $data['amount'],
+                'status' => 'in',
+                'transaction_type' => TransactionTypesEnum::PIX,
+                'transaction_id' => $pixMovement->id,
+                'account_id' => $accountReceiver->id,
+            ]);
+
             DB::commit();
 
             return response()->json([
                 'success' => true,
                 'pixMovement' => $pixMovement,
                 'accountSender' => $accountSender,
+                'report' => $report
             ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();

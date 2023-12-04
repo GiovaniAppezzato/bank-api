@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Report;
 use App\Models\Savings;
 use App\Models\SavingsMovement;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\TransactionTypesEnum;
 use App\Http\Requests\StoreSavingsMovementsRequest;
 
 class SavingsMovementsController extends Controller
@@ -33,6 +35,12 @@ class SavingsMovementsController extends Controller
             $account = Auth::user()->account;
             $savings = Savings::where('account_id', $account->id)->first();
 
+            $savingsMovements = SavingsMovement::create([
+                'amount' => $data['amount'],
+                'type'   => $data['type'],
+                'savings_id' => $savings->id,
+            ]);
+
             if($data['type'] === 'Deposit') {
                 $savingsBalance = $savings->balance + $data['amount'];
                 $savings->balance = $savingsBalance;
@@ -41,6 +49,8 @@ class SavingsMovementsController extends Controller
                 $accountBalance = $account->balance - $data['amount'];
                 $account->balance = $accountBalance;
                 $account->save();
+
+                $statusReport = 'out';
             } else {
                 $savingsBalance = $savings->balance - $data['amount'];
                 $savings->balance = $savingsBalance;
@@ -49,12 +59,16 @@ class SavingsMovementsController extends Controller
                 $accountBalance = $account->balance + $data['amount'];
                 $account->balance = $accountBalance;
                 $account->save();
+
+                $statusReport = 'in';
             }
 
-            $savingsMovements = SavingsMovement::create([
+            $report = Report::create([
                 'amount' => $data['amount'],
-                'type'   => $data['type'],
-                'savings_id' => $savings->id,
+                'status' => $statusReport,
+                'transaction_type' => TransactionTypesEnum::SAVINGS,
+                'transaction_id' => $savingsMovements->id,
+                'account_id' => $account->id,
             ]);
 
             DB::commit();
@@ -63,7 +77,8 @@ class SavingsMovementsController extends Controller
                 'success' => true,
                 'savingsMovement' => $savingsMovements,
                 'savings' => $savings,
-                'account' => $account
+                'account' => $account,
+                'report' => $report
             ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();
