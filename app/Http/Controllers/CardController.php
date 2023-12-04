@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Card;
-use App\Models\Account;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreCardRequest;
 
@@ -12,7 +11,11 @@ class CardController extends Controller
 {
     public function index()
     {
-        $cards = Auth::user()->account->cards;
+        $account = Auth::user()->account;
+
+        $cards = $account->cards()
+            ->where('is_blocked', false)
+            ->get();
 
         return response()->json([
             'cards' => $cards
@@ -48,10 +51,9 @@ class CardController extends Controller
 
     public function destroy(Card $card)
     {
-        $card->update([
-            'is_blocked' => true,
-        ]);
+        $card->is_blocked = true;
+        $card->save();
 
-        return response()->json(null, 201);
+        return response()->json(null, 200);
     }
 }

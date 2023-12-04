@@ -22,7 +22,7 @@ class StoreLoanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount'         => ['double','required']
+            'amount' => ['required', 'numeric']
         ];
     }
 }

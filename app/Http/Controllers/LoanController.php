@@ -3,47 +3,43 @@
 namespace App\Http\Controllers;
 
 use App\Models\Loan;
-use App\Models\Account;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreLoanRequest;
 
 class LoanController extends Controller
 {
-    public function index()
-    {
-        $account = Account::whereHas('user', function($query){
-            $query->where('id', Auth::id());
-        });
-
-        $loans = Loan::whereHas('account', function ($query) use ($account){
-            $query->where('account_id', $account->id);
-        })->get();
-
-        return response()->json([
-            'loans' => $loans
-        ], 200);
-    }
-
     public function store(StoreLoanRequest $request)
     {
-        $data = $request->validated();
+        try {
+            DB::beginTransaction();
 
-        $account = Account::whereHas('user', function($query){
-            $query->where('id', Auth::id());
-        });
+            $data = $request->validated();
 
-        $loan = Loan::create([
-            'amount'     => $data['amount'],
-            'account_id' => $account->id
-        ]);
+            $account = Auth::user()->account;
 
-        $account->balance = $loan->amount;
-        $account->save();
+            $loan = Loan::create([
+                'amount'     => $data['amount'],
+                'account_id' => $account->id
+            ]);
 
-        return response()->json([
-            'status'   => true,
-            'loan' => $loan
-        ], 201);
+            $account->balance = $account->balance + $loan->amount;
+            $account->save();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'loan' => $loan,
+                'account' => $account
+            ], 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'error' => $th->getMessage()
+            ], 500);
+        }
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\SavingsMovementsController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\PixKeyController;
 use App\Http\Controllers\PixMovementController;
+use App\Http\Controllers\LoanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +47,8 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::apiResource('pix-movements', PixMovementController::class)->only(['index', 'store']);
     Route::get('pix-movements/get-account-by-pix-key/{pixKey}', [PixMovementController::class, 'getAccountByPixKey']);
 
+    Route::apiResource('loans', LoanController::class)->only(['store']);
     Route::apiResource('pix-keys', PixKeyController::class)->except(['show', 'update']);
-    Route::apiResource('cards', CardController::class)->only(['index', 'store']);
+    Route::apiResource('cards', CardController::class)->only(['index', 'store', 'destroy']);
 });
 
